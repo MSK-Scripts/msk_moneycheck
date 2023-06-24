@@ -4,7 +4,7 @@ games { 'gta5' }
 author 'Musiker15 - MSK Scripts'
 name 'msk_moneycheck'
 description 'Moneychecker with Discordlogs'
-version '1.0'
+version '1.1'
 
 lua54 'yes'
 

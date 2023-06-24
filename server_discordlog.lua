@@ -5,8 +5,7 @@ local attentionLink = "https://discord.com/api/webhooks/10108866"
 
 sendDiscordLog = function(action, playerId, account, money)
 	if not Config.DiscordLog then return end
-	local desc = ''
-	local titledesc = ''
+	local desc, titledesc = '', ''
 
 	if action == 'set' then 
 		action = 'SET'
@@ -19,21 +18,21 @@ sendDiscordLog = function(action, playerId, account, money)
 		desc = ('Player %s (ID: %s) REMOVED %s to his/her %s Money'):format(GetPlayerName(playerId), playerId, '$'..MSK.Comma(money), account:upper())
 	end
 
-	local webhook = webhookLink
-	local botColor = Config.botColor
-	local botName = Config.botName
-	local botAvatar = Config.botAvatar
+	local webhook, botColor, botName, botAvatar = webhookLink, Config.botColor, Config.botName, Config.botAvatar
+	local rolePing = 0
 
 	if money >= Config.Warning.amount then 
 		webhook = warningLink 
 		botColor = Config.Warning.color
 		titledesc = ' - WARNING'
+		if Config.Warning.pingRole.enable then rolePing = Config.Warning.pingRole.roleId end
 	end
 
 	if money >= Config.Attention.amount then 
 		webhook = attentionLink 
 		botColor = Config.Attention.color
 		titledesc = ' - ATTENTION'
+		if Config.Attention.pingRole.enable then rolePing = Config.Attention.pingRole.roleId end
 	end
 
 	local title = "MSK Moneychecker" .. titledesc
@@ -41,7 +40,8 @@ sendDiscordLog = function(action, playerId, account, money)
 	local fields = {
 		{name = "Action", value = action, inline = true},
 		{name = "Account", value = account:upper(), inline = true},
-		{name = "Amount", value = '$'..MSK.Comma(money), inline = true}
+		{name = "Amount", value = '$'..MSK.Comma(money), inline = true},
+		{name = "Ping", value = (rolePing > 0 and '<@&'..rolePing..'>') or 'not nessecary', inline = true},
 	}
 	local footer = {
 		text = "© MSK Scripts", 
